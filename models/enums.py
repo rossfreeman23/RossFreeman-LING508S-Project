@@ -1,3 +1,5 @@
+
+#Enumerations
 from enum import Enum
 class Gender(Enum):
     MASCULINE = "masculine"
