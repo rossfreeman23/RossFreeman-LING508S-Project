@@ -6,5 +6,8 @@ def test_load_lexicon():
     entries = repo.load_lexicon()
     repo.close()
     assert len(entries) >= 2
-    assert entries[0].form == "teach"
-    assert entries[0].definition == "house"
+    first = entries[0]
+    assert first.form == "teach"
+    assert first.definition == "house"
+    assert first.part_of_speech == PartOfSpeech.NOUN
+    assert first.mutation == Mutation.NONE
