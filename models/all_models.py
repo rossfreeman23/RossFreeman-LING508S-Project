@@ -1,67 +1,46 @@
 #Model_Enumerations
 from enum import Enum
 class Gender(Enum):
-    MASCULINE = "masculine"
-    FEMININE = "feminine"
-class Tense(Enum):
-    PRESENT = "present"
-    PAST = "past"
-    FUTURE = "future"
-class Mood(Enum):
-    INDICATIVE = "indicative"
-    IMPERATIVE = "imperative"
-    SUBJUNCTIVE = "subjunctive"
+    MASCULINE = 1
+    FEMININE = 2
 class Case(Enum):
-    NOMINATIVE = "nominative"
-    GENITIVE = "genitive"
-    DATIVE = "dative"
-    VOCATIVE = "vocative"
+    NOMINATIVE = 1
+    GENITIVE = 2
+    DATIVE = 3
+    VOCATIVE = 4
 class Number(Enum):
-    SINGULAR = "singular"
-    PLURAL = "plural"
-class Mutation(Enum):
-    NONE = "none"
-    LENITION = "lenition"
-    ECLIPSIS = "eclipsis"
-class Voice(Enum):
-    ACTIVE = "active"
-    PASSIVE = "passive"
-class Person(Enum):
-    FIRST = "first"
-    SECOND = "second"
-    THIRD = "third"
-class PartOfSpeech(Enum):
-    NOUN = "noun"
-    VERB = "verb"
-    ADJECTIVE = "adjective"
-    PREPOSITION = "preposition"
-#Model_Finite_Verb
-from models.enums import Person, Number, Tense, Voice, Mood
-class FiniteVerb:
-    def __init__(self, person, number, tense, voice, mood):
-        self.person = person
-        self.number = number
-        self.tense = tense
-        self.voice = voice
-        self.mood = mood
-#Model_Lexical_Entry
-from models.enums import PartOfSpeech, Mutation
-class LexicalEntry:
-    def __init__(self, form, part_of_speech, definition, mutation):
-        self.form = form
-        self.part_of_speech = part_of_speech
-        self.definition = definition
-        self.mutation = mutation
-#Model_Noun
-from models.enums import Case, Number, Gender, Mutation
-class Noun:
-    def __init__(self, case, number, gender, mutation):
+    SINGULAR = 1
+    PLURAL = 2
+class Declension(Enum):
+    FIRST = 1
+    SECOND = 2
+    THIRD = 3
+    FOURTH = 4
+    FIFTH = 5
+#Model_Noun_Form
+from models.enums import Case, Number
+class NounForm:
+    def __init__(self, surface_form: str, case: Case, number: Number):
+        self.surface_form = surface_form
         self.case = case
         self.number = number
+#Model_Lexical_Entry
+from models.noun import Noun
+class LexicalEntry:
+    def __init__(self, lemma: str, definition: str, part_of_speech: str, noun_data: Noun = None):
+        self.lemma = lemma
+        self.definition = definition
+#Model_Noun
+from models.enums import Gender, Declension
+from models.noun_form import NounForm
+class Noun:
+    def __init__(self, gender: Gender, declension: Declension, forms: list[NounForm]):
         self.gender = gender
-        self.mutation = mutation
+        self.declension = declension
+        self.forms = forms
 #Models_Word
+from models.lexical_entry import LexicalEntry
 class Word:
-    def __init__(self, lexical_entry, surface_form):
-        self.lexical_entry = lexical_entry
+    def __init__(self, surface_form: str, entries: list[LexicalEntry]):
         self.surface_form = surface_form
+        self.entries = entries
