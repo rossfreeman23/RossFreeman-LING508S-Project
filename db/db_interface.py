@@ -1,6 +1,7 @@
 import abc
-from models.lexical_entry import LexicalEntry
+from typing import List
+from models.models import LexicalEntry
 class Repository(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def load_lexicon(self) -> list[LexicalEntry]:
+    def load_lexicon(self) -> List[LexicalEntry]:
         raise NotImplementedError
