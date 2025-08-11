@@ -1,72 +1,47 @@
 import pytest
-from models.enums import (
-    Gender, Tense, Mood, Case, Number, Mutation, Voice, Person, PartOfSpeech
+from models.models import (
+    Word, LexicalEntry, Noun, NounForm,
+    Gender, Declension, Case, Number
 )
-from models.finite_verb import FiniteVerb
-from models.lexical_entry import LexicalEntry
-from models.noun import Noun
-from models.word import Word
-#enum_tests
-def test_enum_gender():
-    assert Gender.MASCULINE.value == "masculine"
-    assert Gender.FEMININE.value == "feminine"
-def test_enum_tense():
-    assert Tense.PRESENT.value == "present"
-    assert Tense.PAST.value == "past"
-    assert Tense.FUTURE.value == "future"
-def test_enum_mood():
-    assert Mood.IMPERATIVE.value == "imperative"
-def test_enum_case():
-    assert Case.DATIVE.value == "dative"
-def test_enum_number():
-    assert Number.PLURAL.value == "plural"
-def test_enum_mutation():
-    assert Mutation.ECLIPSIS.value == "eclipsis"
-def test_enum_voice():
-    assert Voice.PASSIVE.value == "passive"
-def test_enum_person():
-    assert Person.SECOND.value == "second"
-def test_enum_part_of_speech():
-    assert PartOfSpeech.ADJECTIVE.value == "adjective"
-#finite_verb_tests
-def test_finite_verb_creation():
-    verb = FiniteVerb(
-        person=Person.FIRST,
-        number=Number.SINGULAR,
-        tense=Tense.PAST,
-        voice=Voice.ACTIVE,
-        mood=Mood.INDICATIVE
-    )
-    assert verb.tense == Tense.PAST
-    assert verb.voice == Voice.ACTIVE
-def test_lexical_entry_creation():
-    entry = LexicalEntry(
-        form="teach",
-        part_of_speech=PartOfSpeech.NOUN,
-        definition="house",
-        mutation=Mutation.NONE
-    )
-    assert entry.form == "teach"
-    assert entry.definition == "house"
-    assert entry.mutation == Mutation.NONE
-#noun_tests
-def test_noun_properties():
-    noun = Noun(
-        case=Case.GENITIVE,
-        number=Number.SINGULAR,
-        gender=Gender.MASCULINE,
-        mutation=Mutation.LENITION
-    )
-    assert noun.case == Case.GENITIVE
-    assert noun.mutation == Mutation.LENITION
-#word_tests
-def test_word_creation():
-    lex_entry = LexicalEntry(
-        form="madra",
-        part_of_speech=PartOfSpeech.NOUN,
-        definition="dog",
-        mutation=Mutation.NONE
-    )
-    word = Word(lexical_entry=lex_entry, surface_form="madra")
-    assert word.lexical_entry.definition == "dog"
-    assert word.surface_form == "madra"
+#test_enum
+def test_gender_enum():
+    assert Gender.MASCULINE.name == "MASCULINE"
+    assert Gender.FEMININE.name == "FEMININE"
+def test_case_enum():
+    assert Case.NOMINATIVE.name == "NOMINATIVE"
+    assert Case.GENITIVE.name == "GENITIVE"
+    assert Case.DATIVE.name == "DATIVE"
+    assert Case.VOCATIVE.name == "VOCATIVE"
+def test_number_enum():
+    assert Number.SINGULAR.name == "SINGULAR"
+    assert Number.PLURAL.name == "PLURAL"
+def test_declension_enum():
+    assert Declension.FIRST.name == "FIRST"
+    assert Declension.FIFTH.name == "FIFTH"
+#test_nounform
+def test_noun_form_creation():
+    nf = NounForm(surface_form="bháid", case=Case.GENITIVE, number=Number.PLURAL)
+    assert nf.surface_form == "bháid"
+    assert nf.case == Case.GENITIVE
+    assert nf.number == Number.PLURAL
+def test_noun_with_forms():
+    form1 = NounForm("bád", Case.NOMINATIVE, Number.SINGULAR)
+    form2 = NounForm("báid", Case.NOMINATIVE, Number.PLURAL)
+    noun = Noun(gender=Gender.MASCULINE, declension=Declension.FIRST, forms=[form1, form2])
+    assert noun.gender == Gender.MASCULINE
+    assert noun.declension == Declension.FIRST
+    assert len(noun.forms) == 2
+    assert noun.forms[0].surface_form == "bád"
+#test_lexicalentry
+def test_lexical_entry_basic():
+    entry = LexicalEntry(lemma="bád", definition="boat")
+    assert entry.lemma == "bád"
+    assert entry.definition == "boat"
+#test_word
+def test_word_with_entries():
+    entry1 = LexicalEntry("bád", "boat")
+    entry2 = LexicalEntry("báid", "boats")
+    word = Word(surface_form="báid", entries=[entry1, entry2])
+    assert word.surface_form == "báid"
+    assert len(word.entries) == 2
+    assert word.entries[0].definition == "boat"
