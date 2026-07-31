@@ -69,7 +69,6 @@ class LexicalEntry:
 
 #Word_Class
 class Word:
-
     def __init__(
         self,
         surface_form: str,
