@@ -12,24 +12,27 @@ from models.models import (
     Number,
     PartOfSpeech,
 )
+
 class MysqlRepository(Repository):
     """
     MySQL implementation of the Repository interface.
     """
+
     def __init__(self, config: dict):
         self.conn = mysql.connector.connect(**config)
+
     def load_lexicon(self) -> List[LexicalEntry]:
         """
-        Return every lexical entry, including its noun data and forms.
+        Return every lexical entry, including noun data and forms.
         """
         return self._fetch_entries()
+
     def get_lexical_entry(
         self,
         lemma: str
     ) -> Optional[LexicalEntry]:
         """
         Return the complete lexical entry for a lemma.
-
         Return None when the lemma does not exist.
         """
         entries = self._fetch_entries(lemma)
@@ -42,8 +45,8 @@ class MysqlRepository(Repository):
     ) -> List[LexicalEntry]:
         """
         Retrieve database rows and convert them into domain objects.
-        When lemma is supplied, only entries matching that lemma are
-        retrieved. Otherwise, the complete lexicon is retrieved.
+        When a lemma is supplied, retrieve only entries matching that
+        lemma. Otherwise, retrieve the complete lexicon.
         """
         query = """
             SELECT
@@ -81,32 +84,37 @@ class MysqlRepository(Repository):
         finally:
             cursor.close()
         return self._build_entries(rows)
+
     def _build_entries(
         self,
         rows: List[dict]
     ) -> List[LexicalEntry]:
         """
-        Convert joined database rows into complete LexicalEntry objects.
+        Convert joined database rows into complete domain objects.
+        MySQL stores grammatical enum values as integers. Calling an
+        enum class with one of those integers reconstructs the matching
+        Python enum member.
         """
         entries: Dict[int, LexicalEntry] = {}
         for row in rows:
             lexical_entry_id = row["lexical_entry_id"]
             if lexical_entry_id not in entries:
                 noun_data = None
+
                 if row["noun_id"] is not None:
                     noun_data = Noun(
-                        gender=Gender[row["gender"].upper()],
-                        declension=Declension[
-                            row["declension"].upper()
-                        ],
+                        gender=Gender(row["gender"]),
+                        declension=Declension(
+                            row["declension"]
+                        ),
                         forms=[]
                     )
                 entries[lexical_entry_id] = LexicalEntry(
                     lemma=row["lemma"],
                     definition=row["definition"],
-                    part_of_speech=PartOfSpeech[
-                        row["part_of_speech"].upper()
-                    ],
+                    part_of_speech=PartOfSpeech(
+                        row["part_of_speech"]
+                    ),
                     noun_data=noun_data
                 )
             entry = entries[lexical_entry_id]
@@ -116,15 +124,15 @@ class MysqlRepository(Repository):
             ):
                 noun_form = NounForm(
                     surface_form=row["surface_form"],
-                    case=Case[
-                        row["grammatical_case"].upper()
-                    ],
-                    number=Number[
-                        row["grammatical_number"].upper()
-                    ],
-                    mutation=Mutation[
-                        row["mutation"].upper()
-                    ]
+                    case=Case(
+                        row["grammatical_case"]
+                    ),
+                    number=Number(
+                        row["grammatical_number"]
+                    ),
+                    mutation=Mutation(
+                        row["mutation"]
+                    )
                 )
                 entry.noun_data.forms.append(noun_form)
         return list(entries.values())
@@ -134,6 +142,7 @@ class MysqlRepository(Repository):
         """
         if self.conn.is_connected():
             self.conn.close()
+
     def __del__(self):
         """
         Close the connection if the repository is destroyed.
