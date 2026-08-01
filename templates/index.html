@@ -1,1 +1,199 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+    <title>Irish Noun Morphological Parser</title>
+    <style>
+        body {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            font-family: Arial, sans-serif;
+            color: #1f2933;
+            background-color: #f4f7f5;
+        }
+        h1,
+        h2 {
+            color: #174f3b;
+        }
+        section {
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            border: 1px solid #d8e2dc;
+            border-radius: 8px;
+            background-color: white;
+        }
+        form {
+            display: flex;
+            gap: 0.75rem;
+            align-items: end;
+        }
+        .form-field {
+            flex: 1;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #9fb3a8;
+            border-radius: 4px;
+            font: inherit;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 0.7rem 1.25rem;
+            border: 0;
+            border-radius: 4px;
+            background-color: #297955;
+            color: white;
+            font: inherit;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1f6043;
+        }
+        .error {
+            border-color: #d64545;
+            color: #9b1c1c;
+            background-color: #fff5f5;
+        }
+        .noun-summary {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .noun-summary div {
+            padding: 0.75rem;
+            border-radius: 4px;
+            background-color: #f4f7f5;
+        }
+        .label {
+            display: block;
+            color: #52606d;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th,
+        td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #d8e2dc;
+            text-align: left;
+        }
+        th {
+            color: #174f3b;
+            background-color: #edf4f0;
+        }
+        @media (max-width: 600px) {
+            form {
+                display: block;
+            }
+            button {
+                width: 100%;
+                margin-top: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Irish Noun Morphological Parser</h1>
+        <p>
+            Enter an Irish noun to retrieve its complete
+            morphological paradigm.
+        </p>
+    </header>
+    <main>
+        <section>
+            <h2>Search for a noun</h2>
+            <form
+                action="{{ url_for('search_noun') }}"
+                method="post"
+            >
+                <div class="form-field">
+                    <label for="word">Irish noun</label>
+                    <input
+                        id="word"
+                        name="word"
+                        type="text"
+                        value="{{ word or '' }}"
+                        placeholder="For example: teach"
+                        required
+                        autofocus
+                    >
+                </div>
+                <button type="submit">Search</button>
+            </form>
+        </section>
+        {% if error %}
+            <section class="error" role="alert">
+                <h2>Search error</h2>
+                <p>{{ error }}</p>
+            </section>
+        {% endif %}
+        {% if result %}
+            <section>
+                <h2>Results for “{{ result["lemma"] }}”</h2>
+                <div class="noun-summary">
+                    <div>
+                        <span class="label">Definition</span>
+                        {{ result["definition"] }}
+                    </div>
+                    <div>
+                        <span class="label">Part of speech</span>
+                        {{ result["part_of_speech"] | title }}
+                    </div>
+                    <div>
+                        <span class="label">Gender</span>
+                        {{ result["gender"] | title }}
+                    </div>
+                    <div>
+                        <span class="label">Declension</span>
+                        {{ result["declension"] | title }}
+                    </div>
+                </div>
+                <h3>Noun forms</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">Surface form</th>
+                                <th scope="col">Case</th>
+                                <th scope="col">Number</th>
+                                <th scope="col">Mutation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for form in result["forms"] %}
+                                <tr>
+                                    <td>{{ form["surface_form"] }}</td>
+                                    <td>{{ form["case"] | title }}</td>
+                                    <td>{{ form["number"] | title }}</td>
+                                    <td>{{ form["mutation"] | title }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        {% endif %}
+    </main>
+</body>
+</html>
