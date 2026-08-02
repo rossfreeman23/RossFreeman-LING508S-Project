@@ -129,7 +129,7 @@ VALUES
 
 
 -- MADRA: noun = 1; masculine = 1; fourth declension = 4
-------------------------------------------------------------
+-- ------------------------------------------------------------
 INSERT INTO lexical_entries (
     lemma,
     part_of_speech,
