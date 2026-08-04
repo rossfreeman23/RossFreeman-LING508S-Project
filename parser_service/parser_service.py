@@ -7,11 +7,6 @@ def generate_all_noun_forms_from_db(
     word: str,
     repository: Optional[Repository] = None
 ) -> dict:
-    """
-    Retrieve a noun and its complete morphological paradigm.
-    A repository can be supplied during testing. If none is supplied,
-    the service creates a MySQL repository.
-    """
     if not isinstance(word, str):
         raise TypeError("word must be a string")
     normalized_word = word.strip()
