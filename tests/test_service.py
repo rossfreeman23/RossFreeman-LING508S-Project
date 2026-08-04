@@ -1,3 +1,7 @@
+# tests/test_service.py: Tests the parser service independently from MySQL by using a fake repository 
+# with predictable noun data. These tests verify successful lookups, input normalization,
+# output formatting, and error handling.
+
 import pytest
 
 from models.models import (
@@ -16,9 +20,6 @@ from parser_service.parser_service import (
 )
 
 class FakeRepository:
-    """
-    Provides predictable data for service tests without using MySQL.
-    """
     def __init__(self):
         self.entry = LexicalEntry(
             lemma="teach",
