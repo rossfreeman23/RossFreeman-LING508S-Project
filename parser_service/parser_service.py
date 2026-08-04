@@ -3,6 +3,7 @@ from config import config
 from db.db_interface import Repository
 from db.mysql_db import MysqlRepository
 from models.models import PartOfSpeech
+
 def generate_all_noun_forms_from_db(
     word: str,
     repository: Optional[Repository] = None
