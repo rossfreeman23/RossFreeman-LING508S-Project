@@ -1,3 +1,7 @@
+# tests/test_db.py: Tests the MySQL repository using the initialized grammar_db database.
+# These tests verify that lexical entries and their associated noun data can be retrieved
+# and converted into the correct Python domain objects.
+
 import pytest
 from config import config
 from db.mysql_db import MysqlRepository
@@ -12,9 +16,6 @@ from models.models import (
 
 @pytest.fixture
 def repository():
-    """
-    Create a repository for each test and close it afterward.
-    """
     repo = MysqlRepository(config)
     yield repo
     repo.close()
