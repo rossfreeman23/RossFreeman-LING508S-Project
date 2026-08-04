@@ -1,3 +1,6 @@
+# db/db_interface.py: Defines the abstract repository interface used by the service layer.
+# The interface separates database operations from the application’s domain models and business logic.
+
 import abc
 from typing import List, Optional
 from models.models import LexicalEntry
@@ -12,4 +15,3 @@ class Repository(metaclass=abc.ABCMeta):
         lemma: str
     ) -> Optional[LexicalEntry]:
         raise NotImplementedError
-        
