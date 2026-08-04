@@ -14,27 +14,14 @@ from models.models import (
 )
 
 class MysqlRepository(Repository):
-    """
-    MySQL implementation of the Repository interface.
-    """
-
     def __init__(self, config: dict):
         self.conn = mysql.connector.connect(**config)
-
     def load_lexicon(self) -> List[LexicalEntry]:
-        """
-        Return every lexical entry, including noun data and forms.
-        """
         return self._fetch_entries()
-
     def get_lexical_entry(
         self,
         lemma: str
     ) -> Optional[LexicalEntry]:
-        """
-        Return the complete lexical entry for a lemma.
-        Return None when the lemma does not exist.
-        """
         entries = self._fetch_entries(lemma)
         if not entries:
             return None
@@ -43,11 +30,6 @@ class MysqlRepository(Repository):
         self,
         lemma: Optional[str] = None
     ) -> List[LexicalEntry]:
-        """
-        Retrieve database rows and convert them into domain objects.
-        When a lemma is supplied, retrieve only entries matching that
-        lemma. Otherwise, retrieve the complete lexicon.
-        """
         query = """
             SELECT
                 le.id AS lexical_entry_id,
@@ -89,18 +71,11 @@ class MysqlRepository(Repository):
         self,
         rows: List[dict]
     ) -> List[LexicalEntry]:
-        """
-        Convert joined database rows into complete domain objects.
-        MySQL stores grammatical enum values as integers. Calling an
-        enum class with one of those integers reconstructs the matching
-        Python enum member.
-        """
         entries: Dict[int, LexicalEntry] = {}
         for row in rows:
             lexical_entry_id = row["lexical_entry_id"]
             if lexical_entry_id not in entries:
                 noun_data = None
-
                 if row["noun_id"] is not None:
                     noun_data = Noun(
                         gender=Gender(row["gender"]),
@@ -137,16 +112,9 @@ class MysqlRepository(Repository):
                 entry.noun_data.forms.append(noun_form)
         return list(entries.values())
     def close(self) -> None:
-        """
-        Close the MySQL connection.
-        """
         if self.conn.is_connected():
             self.conn.close()
-
     def __del__(self):
-        """
-        Close the connection if the repository is destroyed.
-        """
         try:
             self.close()
         except (AttributeError, mysql.connector.Error):
