@@ -1,3 +1,7 @@
+# db/mysql_db.py: Implements the repository interface for a MySQL database.
+# It retrieves lexical entries, noun properties, and noun forms from the normalized
+# database tables and converts the returned rows into domain model objects.
+
 from typing import Dict, List, Optional
 import mysql.connector
 from db.db_interface import Repository
