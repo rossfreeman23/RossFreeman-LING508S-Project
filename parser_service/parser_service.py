@@ -1,3 +1,8 @@
+# parser_service/parser_service.py: Implements the application's Irish noun paradigm lookup use case.
+# The service validates and normalizes the user's input, asks the repository for the matching 
+# lexical entry, and converts its domain objects into a dictionary suitable for the 
+# Flask API and HTML interface.
+
 from typing import Optional
 from config import config
 from db.db_interface import Repository
