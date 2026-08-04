@@ -1,9 +1,5 @@
-"""
-Flask application for the Irish Noun Morphological Parser.
-
-Flask receives browser and API requests, validates their basic
-structure, and passes noun searches to the service layer.
-"""
+# Flask application for the Irish Noun Morphological Parser.
+# Flask receives browser and API requests, validates their basic structure, and passes noun searches to the service layer.
 
 from typing import Callable
 
