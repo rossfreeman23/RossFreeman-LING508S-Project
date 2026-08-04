@@ -16,10 +16,8 @@ CREATE TABLE lexical_entries (
     lemma VARCHAR(255) NOT NULL,
     part_of_speech TINYINT UNSIGNED NOT NULL,
     definition TEXT NOT NULL,
-
     CONSTRAINT uq_lexical_entry
         UNIQUE (lemma, part_of_speech),
-
     CONSTRAINT chk_part_of_speech
         CHECK (part_of_speech BETWEEN 1 AND 3)
 );
@@ -34,16 +32,12 @@ CREATE TABLE nouns (
     lexical_entry_id INT NOT NULL,
     gender TINYINT UNSIGNED NOT NULL,
     declension TINYINT UNSIGNED NOT NULL,
-
     CONSTRAINT uq_noun_lexical_entry
         UNIQUE (lexical_entry_id),
-
     CONSTRAINT chk_noun_gender
         CHECK (gender BETWEEN 1 AND 2),
-
     CONSTRAINT chk_noun_declension
         CHECK (declension BETWEEN 1 AND 5),
-
     CONSTRAINT fk_noun_lexical_entry
         FOREIGN KEY (lexical_entry_id)
         REFERENCES lexical_entries(id)
@@ -63,16 +57,12 @@ CREATE TABLE noun_forms (
     grammatical_case TINYINT UNSIGNED NOT NULL,
     grammatical_number TINYINT UNSIGNED NOT NULL,
     mutation TINYINT UNSIGNED NOT NULL,
-
     CONSTRAINT chk_noun_form_case
         CHECK (grammatical_case BETWEEN 1 AND 4),
-
     CONSTRAINT chk_noun_form_number
         CHECK (grammatical_number BETWEEN 1 AND 2),
-
     CONSTRAINT chk_noun_form_mutation
         CHECK (mutation BETWEEN 1 AND 3),
-
     CONSTRAINT fk_noun_form_noun
         FOREIGN KEY (noun_id)
         REFERENCES nouns(id)
